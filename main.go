@@ -14,6 +14,13 @@ var period = 15                                    // os.Getenv("PERIOD")
 func main() {
 	fmt.Println("Starting GoWatcher")
 
+	// supression du dossier si re-clone
+	if gitUrl != "" {
+		cmd := exec.Command("rm", "-rf", targetDirPath)
+		cmd.Run()
+	}
+
+	// création du dossier si absent
 	_, err := os.Stat(targetDirPath)
 	if err != nil {
 		fmt.Println("Cannot find directory " + targetDirPath)
@@ -25,6 +32,7 @@ func main() {
 		}
 	}
 
+	// clone du repertoire si gitUrl spécifié
 	if gitUrl != "" {
 		cmd := exec.Command("git", "clone", gitUrl)
 		cmd.Dir = targetDirPath
@@ -33,24 +41,30 @@ func main() {
 		if err != nil {
 			fmt.Println("Cannot fetch repository " + gitUrl)
 			fmt.Println(err)
-			//return
+		} else {
+			// on remonte tous les fichiers d'un niveau
+			cmd = exec.Command("cp", "*/*", ".")
+			cmd.Dir = targetDirPath
+			cmd.Run()
 		}
-
-		cmd = exec.Command("cp", "*/*", ".")
-		cmd.Dir = targetDirPath
-		cmd.Run()
 	}
 
 	for true {
+
+		fmt.Println("Scanning repository...")
 
 		cmd := exec.Command("git", "pull")
 		cmd.Dir = targetDirPath
 		out, _ := cmd.CombinedOutput()
 		outString := string(out)
 
-		fmt.Println(outString)
+		if outString.Contains("Already up to date") {
+			fmt.Println("Nothing to update")
+		} else {
+			fmt.Println("Updating repository")
+		}
 
-		time.Sleep(60 * time.Second)
+		time.Sleep(period * time.Second)
 	}
 
 }

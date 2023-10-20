@@ -11,4 +11,8 @@ COPY --from=build_base /usr/src/app /usr/src/app
 
 WORKDIR /usr/src/app
 
+ENV TARGET_DIR_PATH "/git_path"
+ENV GIT_URL ""
+ENV PERIOD 60
+
 CMD ./app
