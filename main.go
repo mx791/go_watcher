@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 )
 
-var targetDirPath = "./target"                     // os.Getenv("TARGET_DIR_PATH")
-var gitUrl = "https://github.com/mx791/go_watcher" // os.Getenv("GIT_URL")
-var period = 15                                    // os.Getenv("PERIOD")
+var targetDirPath = os.Getenv("TARGET_DIR_PATH")
+var gitUrl = os.Getenv("GIT_URL")
+var period, _ = strconv.Atoi(os.Getenv("PERIOD"))
 
 func main() {
 	fmt.Println("Starting GoWatcher")
