@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -58,13 +59,13 @@ func main() {
 		out, _ := cmd.CombinedOutput()
 		outString := string(out)
 
-		if outString.Contains("Already up to date") {
+		if strings.Contains(outString, "Already up to date") {
 			fmt.Println("Nothing to update")
 		} else {
 			fmt.Println("Updating repository")
 		}
 
-		time.Sleep(period * time.Second)
+		time.Sleep(time.Duration(period) * time.Second)
 	}
 
 }
